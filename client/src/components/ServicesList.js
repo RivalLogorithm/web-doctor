@@ -1,4 +1,5 @@
 import React from 'react'
+import {NavLink} from "react-router-dom";
 
 export const ServicesList = ({services}) => {
     if (!services.length) {
@@ -9,10 +10,8 @@ export const ServicesList = ({services}) => {
         <table>
             <thead>
             <tr>
-                <th>Название</th>
-                <th>Цена</th>
-                <th>Клиника</th>
-                <th>Доктор</th>
+                <th>Cпециалист</th>
+                <th>Цена от</th>
             </tr>
             </thead>
 
@@ -20,10 +19,10 @@ export const ServicesList = ({services}) => {
             {services.map((service) => {
                 return (
                     <tr key={service._id}>
-                        <td>{service.name}</td>
-                        <td>{service.price}</td>
-                        <td>{service.clinic}</td>
-                        <td>{service.doctor}</td>
+                        <td>
+                            <NavLink to={`${service.href}`}>{service.specialist}</NavLink>
+                        </td>
+                        <td>{service.price_from}</td>
                     </tr>
                 )
             })}

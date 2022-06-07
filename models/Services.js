@@ -1,10 +1,10 @@
-const {Schema, model, Types} = require('mongoose')
+const {Schema, model} = require('mongoose')
 
 const schema = new Schema({
-    serviceName: {type: String, required: true},
-    clinic: {type: String, required: true},
-    price: {type: String, required: true},
-    doctor: {type: String, required: true}
+    href: {type: String, required: true},
+    specialist: {type: String, required: true},
+    price_from: {type: Number, required: true},
+    clinic: {type: Array, required: true}
 })
 
 module.exports = model('Service', schema)
