@@ -84,4 +84,57 @@ router.post(
             res.status(500).json({message: "Что-то пошло не так"})
         }
     })
+
+router.put(
+    "/changepass",
+    check('password', 'Минимальная длина пароля 6 символов')
+        .isLength({min: 6}),
+    async (req, res) => {
+        try {
+            const errors = validationResult(req)
+
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    errors: errors.array(),
+                    message: "Некорректные данные для пароля"
+                })
+            }
+
+            const {id, password} = req.body
+
+            const currentUser = await User.findById(id)
+            const isMatch = await bcrypt.compare(password, currentUser.password)
+
+            if (isMatch) {
+                return res.status(400).json({message: 'Пароли не должны совпадать'})
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 12)
+            const user = await User.findByIdAndUpdate(id, {password: hashedPassword})
+            res.status(201).json({message: 'Пароль успешно изменен, повторите вход'})
+        } catch (e) {
+            res.status(500).json({message: "Что-то пошло не так"})
+        }
+    })
+
+router.delete(
+    '/deleteuser',
+    async (req, res) => {
+        try {
+            const {id, password} = req.body
+
+            const currentUser = await User.findById(id)
+            const isMatch = await bcrypt.compare(password, currentUser.password)
+
+            if (!isMatch) {
+                return res.status(400).json({message: 'Пароль неверный'})
+            }
+
+            const user = await User.findByIdAndDelete(id)
+            res.status(201).json({message: "Аккаунт был успешно удален"})
+        } catch (e) {
+            res.status(500).json({message: "Что-то пошло не так"})
+        }
+    })
+
 module.exports = router
